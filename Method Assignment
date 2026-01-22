@@ -1,0 +1,164 @@
+import java.util.Scanner;
+
+public class Method_Assignment {
+
+    //creat the Test class
+    static class Test {
+        private double score;
+//allow any score
+        public Test() {
+            score = 0.0;
+        }
+//set score
+        public Test(double score) {
+            this.score = score;
+        }
+//get score
+        public double getScore() {
+            return score;
+        }
+
+        public void setScore(double score) {
+            this.score = score;
+        }
+
+        @Override
+        public String toString() {
+            return "" + score;
+        }
+    }
+
+    //create course class
+    static class Course {
+        private String courseName;
+        private Test test;
+
+        public Course() {
+            //allow any course name
+            courseName = "";
+            test = new Test();
+        }
+
+        public Course(String courseName) {
+            //set course name
+            this.courseName = courseName;
+            test = new Test();
+        }
+
+        public Course(String courseName, double score) {
+            this.courseName = courseName;
+            test = new Test(score);
+        }
+//get course name
+        public String getCourseName() {
+            return courseName;
+        }
+
+        public void setTestScore(double score) {
+            test.setScore(score);
+        }
+
+        public double getTestScore() {
+            return test.getScore();
+        }
+
+        @Override
+        public String toString() {
+            return courseName + ": " + test.getScore();
+        }
+    }
+
+    //create a tudent class
+    static class Student {
+        //create common variables that are needed for student
+        private String name;
+        private String id;
+        private Course[] courses;
+
+        public Student(String name, String id) {
+            this.name = name;
+            this.id = id;
+            //create 3 courses
+            courses = new Course[3];
+            for (int i = 0; i < 3; i++) {
+                courses[i] = new Course();
+                //stop at 3
+            }
+        }
+        public void setCourse(int index, Course course) {
+            if (index >= 0 && index < 3)
+                courses[index] = course;
+        }
+
+        public Course getCourse(int index) {
+            if (index >= 0 && index < 3)
+                return courses[index];
+            return null;
+        }
+
+        public void setTestScore(int index, double score) {
+            if (index >= 0 && index < 3)
+                courses[index].setTestScore(score);
+        }
+//get grades in each class
+        public double getAverage() {
+            double total = 0;
+            for (int i = 0; i < 3; i++)
+                total += courses[i].getTestScore();
+            return total / 3.0;
+        }
+
+        @Override
+        public String toString() {
+            //print the courses in a nice format
+            return "Student Name: " + name +
+                   "\nStudent ID: " + id +
+                   "\nCourse 1 - " + courses[0] +
+                   "\nCourse 2 - " + courses[1] +
+                   "\nCourse 3 - " + courses[2] +
+                    //input the average grade into the format
+                   "\nAverage: " + getAverage();
+        }
+    }
+
+    // Main method
+    public static void main(String[] args) {
+        //scan
+        Scanner scan = new Scanner(System.in);
+        String name, id, courseName, another;
+
+        do {
+            //ask for student name
+            System.out.print("\nStudent name: ");
+            name = scan.nextLine();
+//ask for student ID number
+            System.out.print("Student ID: ");
+            id = scan.nextLine();
+
+            Student student = new Student(name, id);
+//ask for 3 classes
+            for (int i = 0; i < 3; i++) {
+                System.out.print("Course " + (i + 1) + " name: ");
+                courseName = scan.nextLine();
+                student.setCourse(i, new Course(courseName));
+            }
+//ask for grade in each class
+            for (int i = 0; i < 3; i++) {
+                System.out.print("Score for " + student.getCourse(i).getCourseName() + ": ");
+                student.setTestScore(i, scan.nextDouble());
+            }
+            scan.nextLine();
+
+            System.out.println("\n" + student);
+//create a loop for more studnets grades
+            System.out.print("\nAdd another (y/n)? ");
+            another = scan.nextLine();
+
+        } while (another.equalsIgnoreCase("y"));
+
+        scan.close();
+        
+    }
+}
+
+
