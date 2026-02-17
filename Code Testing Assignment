@@ -1,0 +1,90 @@
+
+import java.util.Scanner;
+
+public class DeBugging {
+
+    public static void main(String[] args) {
+
+        //create a scanner for user input
+        Scanner s = new Scanner(System.in);
+
+        //display the menu options
+        System.out.println("This program calculates round item numbers such as \n" +
+                "1 - Area of a circle (pi r^2)\n" +
+                "2 - Volume of a sphere (4/3 pi r^3)\n" +
+                "3 - Volume of a cone (pi r^2 h/3)\n" +
+                "4 - Volume of a column (pi r^2 h)");
+        System.out.println("Type the number for which one you want to calculate");
+
+        //read which equation the user selected
+        int i = s.nextInt();
+
+        //call appropriate method based on user choice
+        if (i == 1){
+            circleArea();
+        } else if (i == 2){
+            sphereVolume();
+        } else if(i == 3){
+            coneVolume();
+        } else if(i == 4){
+            columnVolume();
+        }
+    }
+
+    //calculate volume of a column using formula: πr²h
+    public static void columnVolume(){
+        System.out.println("Enter the radius of your column, then height of your column");
+
+        Scanner s = new Scanner(System.in);
+
+        int r = s.nextInt();   //radius
+        int h = s.nextInt();   //height
+
+        double result = Math.PI * Math.pow(r, 2) * h;
+
+        //print calculated volume
+        System.out.println(result);
+    }
+
+    //calculates volume of a cone using formula: (πr²h)/3
+    public static void coneVolume(){
+        System.out.println("Enter the radius of your cone, then height of your cone");
+
+        Scanner s = new Scanner(System.in);
+
+        int r = s.nextInt();   //radius
+        int h = s.nextInt();   //height
+
+        double result = (Math.PI * Math.pow(r, 2) * h) / 3.0;
+
+        System.out.println(result);
+    }
+
+    //calculates area of a circle using formula: πr²
+    public static void circleArea(){
+        System.out.println("Enter the radius of your circle");
+
+        Scanner s = new Scanner(System.in);
+
+        int r = s.nextInt();   //radius
+
+        double result = Math.PI * Math.pow(r, 2);
+
+        System.out.println(result);
+    }
+
+    //calculates volume of a sphere using formula: (4/3)πr³
+    public static void sphereVolume(){
+        System.out.println("Enter the radius of your sphere");
+
+        Scanner s = new Scanner(System.in);
+
+        int r = s.nextInt();   //radius
+
+        //use 4.0/3.0 to avoid integer division bug
+        double result = (4.0/3.0) * Math.PI * Math.pow(r, 3);
+
+        //print calculated volume
+        System.out.println(result);
+    }
+}
