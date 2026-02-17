@@ -1,0 +1,293 @@
+//basic interface for speed
+interface Speedometer {
+    public void setSpeed(double inSpeed);
+    public double getSpeed();
+}
+
+//parent class for all of the vehicles
+class Vehicle implements Speedometer {
+    protected String brandName = "";
+    protected double speed = 0.0;
+    protected int passengers = 0;
+    protected double cargoWeight = 0.0;
+
+    public Vehicle() {}
+
+    //constructor with all the paramaters
+    public Vehicle(String inBrand, double inSpeed, int inPassengers, double inCargo) {
+        brandName = inBrand;
+        speed = inSpeed;
+        passengers = inPassengers;
+        cargoWeight = inCargo;
+    }
+
+    public String getBrand() { return brandName; }
+    public void setBrandName(String inBrand) { brandName = inBrand; }
+
+    @Override
+    //get speed
+    public double getSpeed() { return speed; }
+    @Override
+    //set speed
+    public void setSpeed(double inSpeed) { speed = inSpeed; }
+//get passangers
+    public int getPassengers() { return passengers; }
+    //set passangers
+    public void setPassengers(int inPassengers) { passengers = inPassengers; }
+//get weight
+    public double getCargoWeight() { return cargoWeight; }
+    //set weight
+    public void setCargoWeight(double inCargoWeight) { cargoWeight = inCargoWeight; }
+
+    @Override
+    public String toString() {
+        //print strings
+        return "Brand:\t\t\t" + brandName + "\n" +
+               "Speed (mph):\t" + speed + "\n" +
+               "Passengers:\t\t" + passengers + "\n" +
+               "Cargo (lbs):\t" + cargoWeight + "\n";
+    }
+}
+
+//extend cars, # of doors and can they be electric
+class Car extends Vehicle {
+    protected int numberOfDoors;
+    protected boolean isElectric;
+
+    public Car(String brand, double speed, int passengers, double cargo, int doors, boolean electric) {
+        super(brand, speed, passengers, cargo);
+        numberOfDoors = doors;
+        isElectric = electric;
+    }
+
+    public int getNumberOfDoors() { return numberOfDoors; }
+    public void setNumberOfDoors(int doors) { numberOfDoors = doors; }
+    
+    public boolean getIsElectric() { return isElectric; }
+    public void setIsElectric(boolean electric) { isElectric = electric; }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+               "Doors:\t\t\t" + numberOfDoors + "\n" +
+               "Electric:\t\t" + isElectric + "\n";
+    }
+}
+
+//extend car
+class SportsCar extends Car {
+    private double zeroToSixty;
+
+    public SportsCar(String brand, double speed, int passengers, double cargo, 
+                     int doors, boolean electric, double accel) {
+        super(brand, speed, passengers, cargo, doors, electric);
+        zeroToSixty = accel;
+    }
+//get and set 0-60 time
+    public double getZeroToSixty() { return zeroToSixty; }
+    public void setZeroToSixty(double accel) { zeroToSixty = accel; }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                //print time
+               "0-60 Time (sec):\t" + zeroToSixty + "\n";
+    }
+}
+
+//extend truck
+class PickupTruck extends Car {
+    private double towingCapacity;
+
+    public PickupTruck(String brand, double speed, int passengers, double cargo, 
+                       int doors, boolean electric, double towing) {
+        super(brand, speed, passengers, cargo, doors, electric);
+        towingCapacity = towing;
+    }
+//get and set towing capacity
+    public double getTowingCapacity() { return towingCapacity; }
+    public void setTowingCapacity(double towing) { towingCapacity = towing; }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                //print capacity
+               "Towing Capacity (lbs):\t" + towingCapacity + "\n";
+    }
+}
+
+//extend boat
+class Boat extends Vehicle {
+    protected String hullType;
+
+    public Boat(String brand, double speed, int passengers, double cargo, String hull) {
+        super(brand, speed, passengers, cargo);
+        hullType = hull;
+    }
+//get and set hull type
+    public String getHullType() { return hullType; }
+    public void setHullType(String hull) { hullType = hull; }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                //print hull type
+               "Hull Type:\t\t" + hullType + "\n";
+    }
+}
+
+//extend sailboats
+class Sailboat extends Boat {
+    private double mastHeight;
+
+    public Sailboat(String brand, double speed, int passengers, double cargo, 
+                    String hull, double mast) {
+        super(brand, speed, passengers, cargo, hull);
+        mastHeight = mast;
+    }
+//get and set mast height
+    public double getMastHeight() { return mastHeight; }
+    public void setMastHeight(double mast) { mastHeight = mast; }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                //print mast height
+               "Mast Height (ft):\t" + mastHeight + "\n";
+    }
+}
+
+//extend speedboat
+class SpeedBoat extends Boat {
+    private int horsepower;
+
+    public SpeedBoat(String brand, double speed, int passengers, double cargo, 
+                     String hull, int hp) {
+        super(brand, speed, passengers, cargo, hull);
+        horsepower = hp;
+    }
+//get and set horsepower
+    public int getHorsepower() { return horsepower; }
+    public void setHorsepower(int hp) { horsepower = hp; }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                //print horsepower
+               "Horsepower:\t\t" + horsepower + "\n";
+    }
+}
+
+//extend airplane
+class Airplane extends Vehicle {
+    protected double wingspan;
+
+    public Airplane(String brand, double speed, int passengers, double cargo, double span) {
+        super(brand, speed, passengers, cargo);
+        wingspan = span;
+    }
+//get and set wingspan
+    public double getWingspan() { return wingspan; }
+    public void setWingspan(double span) { wingspan = span; }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                //print wingspan
+               "Wingspan (ft):\t\t" + wingspan + "\n";
+    }
+}
+
+//extend fighterjet
+class FighterJet extends Airplane {
+    private boolean afterburner;
+
+    public FighterJet(String brand, double speed, int passengers, double cargo, 
+                      double span, boolean after) {
+        super(brand, speed, passengers, cargo, span);
+        afterburner = after;
+    }
+//get and set fighterjet
+    public boolean getAfterburner() { return afterburner; }
+    public void setAfterburner(boolean after) { afterburner = after; }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                //print fighterjet
+               "Afterburner:\t\t" + afterburner + "\n";
+    }
+}
+
+// extend airplane
+class CommercialAirliner extends Airplane {
+    private int engines;
+
+    public CommercialAirliner(String brand, double speed, int passengers, double cargo, 
+                              double span, int eng) {
+        super(brand, speed, passengers, cargo, span);
+        engines = eng;
+    }
+//get and set engine
+    public int getEngines() { return engines; }
+    public void setEngines(int eng) { engines = eng; }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                //print engine
+               "Engines:\t\t" + engines + "\n";
+    }
+}
+
+//extend rocket
+class RocketShip extends Vehicle {
+    private double maxAltitude;
+    private boolean reusable;
+
+    public RocketShip(String brand, double speed, int passengers, double cargo, 
+                      double altitude, boolean reuse) {
+        super(brand, speed, passengers, cargo);
+        maxAltitude = altitude;
+        reusable = reuse;
+    }
+//get and set max altitude
+    public double getMaxAltitude() { return maxAltitude; }
+    public void setMaxAltitude(double altitude) { maxAltitude = altitude; }
+    //get and set if it is reusable, boolean
+    public boolean getReusable() { return reusable; }
+    public void setReusable(boolean reuse) { reusable = reuse; }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                //print altitude and reusable
+               "Max Altitude (miles):\t" + maxAltitude + "\n" +
+               "Reusable:\t\t" + reusable + "\n";
+    }
+}
+
+//main class to test everything
+public class VehicleProject {
+    public static void main(String[] args) {
+        //make some vehicles
+        SportsCar ferrari = new SportsCar("Ferrari", 211, 2, 200, 2, false, 2.9);
+        PickupTruck ford = new PickupTruck("Ford F-150", 120, 5, 1500, 4, false, 13000);
+        Sailboat sailboat = new Sailboat("Beneteau", 25, 8, 5000, "Displacement", 50);
+        SpeedBoat speedboat = new SpeedBoat("Yamaha", 70, 6, 800, "Planing", 300);
+        FighterJet jet = new FighterJet("F-22 Raptor", 1500, 1, 2000, 44.5, true);
+        CommercialAirliner boeing = new CommercialAirliner("Boeing 737", 588, 180, 46000, 117.5, 2);
+        RocketShip spacex = new RocketShip("SpaceX Falcon 9", 17500, 0, 50000, 340, true);
+
+        //put them in an array
+        Vehicle[] garage = {ferrari, ford, sailboat, speedboat, jet, boeing, spacex};
+
+        //print them out
+        for (Vehicle v : garage) {
+            System.out.println("--------------------");
+            System.out.println(v);
+        }
+    }
+}
+
+   
