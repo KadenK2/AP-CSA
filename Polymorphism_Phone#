@@ -1,0 +1,131 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ */
+
+package com.mycompany.polymorphism_names;
+
+/**
+ *
+ * @author KKuhn2026
+ */
+
+
+public class Polymorphism_Names {
+    public static void main(String[] args)
+    {
+        // create an array to store contacts
+        Contact[] friends = new Contact[9];
+        // adding some people to the list
+        friends[0] = new Contact("Alex",   "Turner",  "619-555-1245");
+        friends[1] = new Contact("Maya",   "Lopez",   "858-555-3321");
+        friends[2] = new Contact("Ethan",  "Carter",  "442-555-7812");
+        friends[3] = new Contact("Olivia", "Diaz",    "760-555-9013");
+        friends[4] = new Contact("Ryan",   "Patel",   "949-555-4412");
+        friends[5] = new Contact("Lucas",  "Nguyen",  "714-555-6673");
+        friends[6] = new Contact("Sofia",  "Morales", "310-555-8832");
+        friends[7] = new Contact("Noah",   "Kim",     "562-555-2234");
+        friends[8] = new Contact("Emma",   "Reed",    "626-555-4456");
+
+        // sort the contacts using selection sort
+        Sorting.selectionSort(friends);
+        System.out.println("*** Selection Sort ***");
+        // print the sorted list
+        for (Contact friend : friends)
+            System.out.println(friend);
+
+        System.out.println();
+
+        // run insertion sort on the same list
+        Sorting.insertionSort(friends);
+        System.out.println("*** Insertion Sort ***");
+        // print again after insertion sort
+        for (Contact friend : friends)
+            System.out.println(friend);
+    }
+}
+
+class Sorting {
+    // basic selection sort algorithm
+    public static void selectionSort(Comparable[] list)
+    {
+        int min;
+        Comparable temp;
+        for (int index = 0; index < list.length - 1; index++)
+        {
+            min = index;
+            for (int scan = index + 1; scan < list.length; scan++)
+                if (list[scan].compareTo(list[min]) < 0)
+                    min = scan;
+            temp = list[min];
+            list[min] = list[index];
+            list[index] = temp;
+        }
+    }
+
+    // insertion sort method
+    public static void insertionSort(Comparable[] list)
+    {
+        for (int index = 1; index < list.length; index++)
+        {
+            Comparable key = list[index];
+            int position = index;
+            while (position > 0 && key.compareTo(list[position - 1]) < 0)
+            {
+                list[position] = list[position - 1];
+                position--;
+            }
+            list[position] = key;
+        }
+    }
+}
+
+// compareTo(Contact other)
+class Contact implements Comparable<Contact>
+{
+    private String firstName, lastName, phone;
+
+    public Contact(String first, String last, String telephone)
+    {
+        firstName = first;
+        lastName  = last;
+        phone     = telephone;
+    }
+
+    public String toString()
+    {
+        return lastName + ", " + firstName + "\t" + phone;
+    }
+
+    public boolean equals(Object other)
+    {
+        return (lastName.equals(((Contact) other).getLastName()) &&
+                firstName.equals(((Contact) other).getFirstName()));
+    }
+
+    // Sorts by phone number first, then last name, then first name alphabetically
+    // This satisfies the requirement: sort by telephone first, by name second
+    // Sorts by telephone number first (primary), then last name (secondary),
+    // then first name (tertiary) — so if multiple contacts share the same number,
+    // they are ordered alphabetically by name.
+    public int compareTo(Contact otherContact)
+    {
+        int result = phone.compareTo(otherContact.phone);
+        if (result == 0)
+        {
+            result = lastName.compareTo(otherContact.getLastName());
+            if (result == 0)
+                result = firstName.compareTo(otherContact.getFirstName());
+        }
+        return result;
+    }
+
+    public String getFirstName()
+    {
+        return firstName;
+    }
+
+    public String getLastName()
+    {
+        return lastName;
+    }
+}
