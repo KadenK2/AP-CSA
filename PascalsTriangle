@@ -3,25 +3,28 @@ import java.util.Scanner;
 public class PascalsTriangle {
 
        public static void buildRow(int row, int[] arr) {
-        if (row == 0) { // Base case: first row is just 1
+            //create the first row as just 1
+        if (row == 0) {
             arr[0] = 1;
             return;
         }
+ //build the previous row first
+        buildRow(row - 1, arr);
 
-        buildRow(row - 1, arr); // Build the previous row first
 
-        // Traverse right to left to avoid overwriting values we still need
         for (int i = row; i >= 1; i--) {
-            arr[i] = arr[i] + arr[i - 1]; // Each interior value is the sum of the two above
+            //make it so that each interior value is the sum of the two above
+            arr[i] = arr[i] + arr[i - 1];
         }
-        arr[0] = 1; // Left edge is always 1
+         //ensure that the left edge is always 1
+        arr[0] = 1;
     }
 
 
-    // Prints all values in the given row array up to the specified row number
-
+    //print all values in the given row array up to the specified row number
     public static void printRow(int row, int[] arr) {
-        for (int i = 0; i <= row; i++) { // Print each value in the row
+         //print each value in the row
+        for (int i = 0; i <= row; i++) {
             System.out.print(arr[i] + " ");
         }
         System.out.println();
@@ -32,13 +35,14 @@ public class PascalsTriangle {
 
         System.out.print("Enter the row number of Pascal's Triangle to display: ");
         int n = scanner.nextInt();
-
-        int[] row = new int[n + 1]; // Array to hold values for the Nth row
-
-        buildRow(n, row); // Recursively compute the row
+ //create the array to hold values for the Nth row
+        int[] row = new int[n + 1];
+ //recursively compute the row
+        buildRow(n, row);
 
         System.out.println("Row " + n + " of Pascal's Triangle:");
-        printRow(n, row); // Print the result
+         //print the result
+        printRow(n, row);
 
         scanner.close();
     
