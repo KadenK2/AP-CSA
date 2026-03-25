@@ -1,0 +1,63 @@
+//import all of the supports
+import java.io.*;
+import java.util.Scanner;
+
+public class AntReadWriteExample {
+
+    public static void main(String[] args) {
+
+        Scanner input = new Scanner(System.in);
+        //try folder
+        try {
+            //create a folder for contacts
+            File folder = new File("Contacts");
+            if (!folder.exists()) {
+                folder.mkdir();
+            }
+
+            //file inside contacts folder
+            File file = new File("Contacts/info.txt");
+
+            //get name
+            System.out.print("Enter your name: ");
+            String name = input.nextLine();
+	//get email address
+            System.out.print("Enter your email: ");
+            String email = input.nextLine();
+	//get grad year
+            System.out.print("Enter graduation year: ");
+            String gradYear = input.nextLine();
+	//get username
+            System.out.print("Enter username: ");
+            String username = input.nextLine();
+
+            //write to the file
+            PrintWriter writer = new PrintWriter(file);
+
+            writer.println("Name: " + name);
+            writer.println("Email: " + email);
+            writer.println("Graduation Year: " + gradYear);
+            writer.println("Username: " + username);
+
+            writer.close();
+
+            System.out.println("\nData written to file.\n");
+
+            //read from the file
+            Scanner fileReader = new Scanner(file);
+
+            System.out.println("Reading file contents:");
+            while (fileReader.hasNextLine()) {
+                System.out.println(fileReader.nextLine());
+            }
+
+            fileReader.close();
+        //catch the code
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+
+        input.close();
+    }
+}
