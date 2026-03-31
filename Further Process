@@ -1,0 +1,85 @@
+//import all java utilities
+import java.util.*;
+
+public class FurtherProcess {
+//create variables
+    static class Contact {
+        private String name;
+        private String email;
+        private int gradYear;
+//define basic catagories
+        public Contact(String name, String email, int gradYear) {
+            this.name = name;
+            this.email = email;
+            this.gradYear = gradYear;
+        }
+//getters
+        public String getName() {
+            return name;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public int getGradYear() {
+            return gradYear;
+        }
+
+        public String toString() {
+            return name + ", " + email + ", " + gradYear;
+        }
+    }
+//main void
+//create 3 random contanct names
+    public static void main(String[] args) {
+        ArrayList<Contact> contacts = new ArrayList<>();
+
+        contacts.add(new Contact("Luke Johnson", "Luker@gmail.com", 2026));
+        contacts.add(new Contact("Catherine Martinez", "Catherine@yahoo.com", 2025));
+        contacts.add(new Contact("Oliver King", "Oli@outlook.com", 2027));
+//scanner and boolean
+        Scanner input = new Scanner(System.in);
+        boolean running = true;
+//print catagories screen for users to input and sort
+        while (running) {
+            System.out.println("\n--- MENU ---");
+            System.out.println("a = add contact");
+            System.out.println("e = sort by email");
+            System.out.println("y = sort by grad year");
+            System.out.println("n = sort by name");
+            System.out.println("q = quit");
+
+            String choice = input.nextLine();
+//if the user inputs a certain letter, have the code sort in accordance to what that letter represents
+            if (choice.equals("a")) {
+                System.out.print("Name: ");
+                String name = input.nextLine();
+
+                System.out.print("Email: ");
+                String email = input.nextLine();
+
+                System.out.print("Grad Year: ");
+                int year = Integer.parseInt(input.nextLine());
+
+                contacts.add(new Contact(name, email, year));
+            } else if (choice.equals("e")) {
+                contacts.sort(Comparator.comparing(Contact::getEmail));
+            } else if (choice.equals("y")) {
+                contacts.sort(Comparator.comparingInt(Contact::getGradYear));
+            } else if (choice.equals("n")) {
+                contacts.sort(Comparator.comparing(Contact::getName));
+            } else if (choice.equals("q")) {
+//if none of the options, it's false
+                running = false;
+            }
+//print the sorted lineup
+            System.out.println("\n--- CONTACTS ---");
+            for (Contact c : contacts) {
+                System.out.println(c);
+            }
+        }
+
+        System.out.println("Program ended.");
+    }
+}
