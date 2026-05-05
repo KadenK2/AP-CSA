@@ -1,0 +1,4 @@
+# id,type,shark,shell
+1,CAVE,true,false
+2,ZONE,false,true
+3,CAVE,true,false
