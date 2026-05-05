@@ -1,0 +1,852 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
+ */
+package divershellgame2;
+
+/**
+ *
+ * @author KKuhn2026
+ */
+
+import java.util.Scanner;
+import java.util.ArrayList;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+//create character class
+abstract class Character
+{
+    //custom name
+    private final String name;
+    private int health;
+
+    public Character(String name, int health)
+    {
+        this.name = name;
+        this.health = health;
+    }
+//getters and setters
+    public String getName()  { return name; }
+    public int getHealth()   { return health; }
+    public void setHealth(int health) { this.health = health; }
+    public boolean isAlive() { return health > 0; }
+
+    public abstract void interact(Diver diver);
+
+    @Override
+    public String toString()
+    {
+        return name + " (HP: " + health + ")";
+    }
+}
+
+//diver class. extension of character class
+class Diver extends Character
+{
+    //create diver characteristics
+    private boolean hasGoldenShell;
+    private int depth;
+
+    public Diver(String name)
+    {
+        super(name, 3);
+        hasGoldenShell = false;
+        depth = 0;
+    }
+
+    public boolean hasGoldenShell() { return hasGoldenShell; }
+
+    public void collectShell(String msg)
+    {
+        //if they have the shell
+        hasGoldenShell = true;
+        System.out.println(msg);
+    }
+
+    public int getDepth() { return depth; }
+
+public void descend(String msg)
+{
+    //if they swim deeper
+    depth++;
+    System.out.println(msg + depth + ")");
+}
+
+    public void surface(String msg)
+    {
+        System.out.println(msg);
+    }
+
+    @Override
+    public void interact(Diver diver)
+    {
+        System.out.println(getName() + " takes a deep breath.");
+    }
+
+    @Override
+    public String toString()
+    {
+        //tell player their levels
+        return "Diver: " + getName() +
+               " | Lives: " + getHealth() +
+               " | Shell: " + hasGoldenShell +
+               " | Depth: " + depth;
+    }
+}
+
+//create enemy class. extension of character class
+abstract class Enemy extends Character
+{
+    private final int attackPower;
+//create characteristics
+    public Enemy(String name, int health, int attackPower)
+    {
+        super(name, health);
+        this.attackPower = attackPower;
+    }
+
+    public int getAttackPower() { return attackPower; }
+
+    public abstract void attack(Diver diver, String[] msgs);
+}
+
+//create shark class. extension of enemy class
+class Shark extends Enemy
+{
+    private boolean lurking;
+
+    public Shark()
+    {
+        super("Great White Shark", 1, 1);
+        lurking = true;
+    }
+
+    public boolean isLurking() { return lurking; }
+
+    public void interact(Diver diver) {}
+
+    @Override
+    public void attack(Diver diver, String[] msgs)
+    {
+        //if the shark attacks
+        System.out.println();
+        System.out.println("  " + msgs[0]);
+        System.out.println("  " + msgs[1]);
+        diver.setHealth(diver.getHealth() - getAttackPower());
+        lurking = false;
+
+        if (diver.isAlive())
+        {
+            //still alive and playing though
+            System.out.println("  " + msgs[2] + " " + diver.getHealth());
+        }
+        else
+        {
+            System.out.println("  " + msgs[3]);
+        }
+    }
+
+    @Override
+    public String toString()
+    {
+        return getName() + (lurking ? " [lurking]" : " [gone]");
+    }
+}
+
+//create item class
+abstract class Item
+{
+    private final String itemName;
+    private boolean collected;
+
+    public Item(String itemName)
+    {
+        this.itemName = itemName;
+        collected = false;
+    }
+//getters and setters
+    public String getItemName()  { return itemName; }
+    public boolean isCollected() { return collected; }
+    public void setCollected(boolean collected) { this.collected = collected; }
+
+    public abstract void collect(Diver diver, String[] msgs);
+
+    @Override
+    public String toString()
+    {
+        //is it collected?
+        return itemName + (collected ? " [collected]" : " [available]");
+    }
+}
+
+//create goldenshell class. extension of item class
+class GoldenShell extends Item
+{
+    public GoldenShell()
+    {
+        super("Golden Shell");
+    }
+
+    @Override
+    public void collect(Diver diver, String[] msgs)
+    {
+        if (!isCollected())
+        {
+            //if the golden shell is collected
+            System.out.println();
+            System.out.println("  " + msgs[0]);
+            System.out.println("  " + msgs[1]);
+            setCollected(true);
+            diver.collectShell(msgs[2]);
+        }
+        else
+        {
+            System.out.println("  " + msgs[3]);
+        }
+    }
+}
+
+//create location class
+abstract class Location
+{
+    private final String name;
+    private boolean visited;
+
+    public Location(String name)
+    {
+        this.name = name;
+        visited = false;
+    }
+//getters and setters
+    public String getName()    { return name; }
+    public boolean isVisited() { return visited; }
+    public void setVisited(boolean visited) { this.visited = visited; }
+
+    public abstract void describe(String[] msgs);
+}
+
+//create zone class. extension of location class
+class Zone extends Location
+{
+    private final int zoneID;
+    private final boolean hasCave;
+    private final ArrayList<Item> items;
+
+    public Zone(int zoneID, boolean hasCave)
+    {
+        super("Zone " + zoneID);
+        this.zoneID = zoneID;
+        this.hasCave = hasCave;
+        items = new ArrayList<>();
+    }
+//getters and setters
+    public int getZoneID()           { return zoneID; }
+    public boolean hasCave()         { return hasCave; }
+    public ArrayList<Item> getItems(){ return items; }
+
+    public void addItem(Item item)   { items.add(item); }
+
+    @Override
+    public void describe(String[] msgs)
+    {
+        //create zone description
+        System.out.println("You are in Zone " + zoneID + ".");
+        System.out.println(msgs[0]);
+        if (hasCave)
+        {
+            System.out.println(msgs[1]);
+        }
+        if (!items.isEmpty())
+        {
+            System.out.println(msgs[2]);
+        }
+    }
+
+    public void explore(Diver diver, String[] msgs, String[] shellMsgs)
+    {
+        System.out.println(msgs[0]);
+        setVisited(true);
+        for (int i = 0; i < items.size(); i++)
+        {
+            Item item = items.get(i);
+            if (!item.isCollected())
+            {
+                item.collect(diver, shellMsgs);
+            }
+        }
+        if (items.isEmpty())
+        {
+            System.out.println(msgs[1]);
+        }
+    }
+
+    public void pass(String msg)
+    {
+        System.out.println(msg + " " + zoneID + " without stopping.");
+    }
+}
+
+//create cave class. extension of zone class
+class Cave extends Zone
+{
+    private final boolean sharkInside;
+    private final Shark shark;
+//create characteristics
+    public Cave(int zoneID, boolean sharkInside, boolean hasShell)
+    {
+        super(zoneID, true);
+        this.sharkInside = sharkInside;
+
+        if (sharkInside)
+        {
+            shark = new Shark();
+        }
+        else
+        {
+            shark = null;
+        }
+
+        if (hasShell)
+        {
+            addItem(new GoldenShell());
+        }
+    }
+
+    public boolean hasShark() { return sharkInside; }
+
+    @Override
+    public void describe(String[] msgs)
+    {
+        System.out.println(msgs[0]);
+        System.out.println(msgs[1]);
+    }
+
+    public void enter(Diver diver, String[] sharkMsgs, String[] exploreMsgs,
+                      String[] shellMsgs, String quietMsg)
+    {
+        System.out.println("You swim into the cave...");
+        setVisited(true);
+
+        if (sharkInside && shark != null && shark.isLurking())
+        {
+            shark.attack(diver, sharkMsgs);
+        }
+        else
+        {
+            System.out.println(quietMsg);
+            explore(diver, exploreMsgs, shellMsgs);
+        }
+    }
+}
+
+//create ocean class. extension of location class
+class Ocean extends Location
+{
+    private int currentDepth;
+    private final ArrayList<Zone> zones;
+
+    public Ocean()
+    {
+        super("The Deep Ocean");
+        currentDepth = 0;
+        zones = new ArrayList<>();
+    }
+
+    //load zones from zones.txt instead of hardcoding
+    public void loadZones(String filename)
+    {
+        try
+        {
+            Scanner fileScanner = new Scanner(new FileReader(filename));
+            while (fileScanner.hasNextLine())
+            {
+                String line = fileScanner.nextLine().trim();
+
+                //skip comment lines and blank lines
+                if (line.length() == 0 || line.charAt(0) == '#')
+                {
+                    continue;
+                }
+
+                //split line by comma
+                String[] parts = line.split(",");
+                int id         = Integer.parseInt(parts[0].trim());
+                String type    = parts[1].trim();
+                boolean shark  = parts[2].trim().equals("true");
+                boolean shell  = parts[3].trim().equals("true");
+
+                if (type.equals("CAVE"))
+                {
+                    zones.add(new Cave(id, shark, shell));
+                }
+                else
+                {
+                    zones.add(new Zone(id, false));
+                }
+            }
+            fileScanner.close();
+        }
+        catch (IOException e)
+        {
+            System.out.println("Error reading zones file: " + e.getMessage());
+        }
+    }
+
+    public int getCurrentDepth()  { return currentDepth; }
+    public boolean hasMoreZones() { return currentDepth < zones.size(); }
+
+    public Zone getNextZone()
+    {
+        if (currentDepth < zones.size())
+        {
+            Zone next = zones.get(currentDepth);
+            currentDepth++;
+            return next;
+        }
+        return null;
+    }
+
+    @Override
+    public void describe(String[] msgs)
+    {
+        System.out.println(msgs[0]);
+        System.out.println(msgs[1]);
+    }
+}
+
+//create surface class. extension of location class
+class Surface extends Location
+{
+    private boolean isReached;
+
+    public Surface()
+    {
+        super("Ocean Surface");
+        isReached = false;
+    }
+
+    public boolean isReached() { return isReached; }
+
+    @Override
+    public void describe(String[] msgs)
+    {
+        System.out.println(msgs[0]);
+        System.out.println(msgs[1]);
+    }
+
+    public void reach(Diver diver, String burstMsg, String[] winMsgs,
+                      String noShellMsg, String secretMsg)
+    {
+        isReached = true;
+        setVisited(true);
+        System.out.println();
+        System.out.println(burstMsg);
+        checkWin(diver, winMsgs, noShellMsg, secretMsg);
+    }
+
+    public void checkWin(Diver diver, String[] winMsgs,
+                         String noShellMsg, String secretMsg)
+    {
+        if (diver.hasGoldenShell())
+        {
+            //if they surface with the shell
+            System.out.println();
+            System.out.println(winMsgs[0]);
+            System.out.println("  YOU WIN, " + diver.getName() + "!");
+            System.out.println("  " + winMsgs[1]);
+            System.out.println(winMsgs[0]);
+        }
+        else
+        {
+            //if they surface without the shell
+            System.out.println();
+            System.out.println(noShellMsg);
+            System.out.println(secretMsg);
+        }
+    }
+}
+
+//create game event class
+class GameEvent
+{
+    private final String prompt;
+    private final ArrayList<String> choices;
+
+    public GameEvent(String prompt)
+    {
+        this.prompt = prompt;
+        choices = new ArrayList<>();
+    }
+
+    public void addChoice(String choice) { choices.add(choice); }
+    public String getPrompt()            { return prompt; }
+
+    public int trigger(Scanner scanner)
+    {
+        System.out.println();
+        System.out.println(prompt);
+
+        for (int i = 0; i < choices.size(); i++)
+        {
+            System.out.println("  " + (i + 1) + ". " + choices.get(i));
+        }
+
+        System.out.print("Your choice: ");
+
+        int choice = 0;
+        while (choice < 1 || choice > choices.size())
+        {
+            String input = scanner.nextLine().trim();
+
+            boolean isNumber = (input.length() > 0);
+            for (int i = 0; i < input.length(); i++)
+            {
+                char c = input.charAt(i);
+                if (c < '0' || c > '9')
+                {
+                    isNumber = false;
+                }
+            }
+
+            if (isNumber)
+            {
+                choice = Integer.parseInt(input);
+            }
+
+            if (choice < 1 || choice > choices.size())
+            {
+                System.out.print("Please enter a number between 1 and "
+                                 + choices.size() + ": ");
+                choice = 0;
+            }
+        }
+        return choice;
+    }
+}
+
+//create divershell game class
+//main class
+public class DiverShellGame2
+{
+    private Diver diver;
+    private final Ocean ocean;
+    private final Surface surface;
+    private String state;
+    private final Scanner scanner;
+
+    //store all messages loaded from messages.txt
+    private String[] messages;
+
+    public DiverShellGame2()
+    {
+        ocean = new Ocean();
+        surface = new Surface();
+        state = "playing";
+        scanner = new Scanner(System.in);
+        messages = new String[50];
+        loadMessages("messages.txt");
+        ocean.loadZones("zones.txt");
+    }
+
+    public static void main(String[] args)
+    {
+        DiverShellGame2 game = new DiverShellGame2();
+        game.start();
+    }
+
+    //load messages from messages.txt into the messages array
+    //each line is key=value, we only store the value part
+    public void loadMessages(String filename)
+    {
+        //known keys in order — order matches how we'll look them up
+        String[] keys = {
+            "title_line1", "title_line2", "title_line3", "title_line4",
+            "win_line1", "win_line2", "win_line3", "win_line4",
+            "gameover_line1", "gameover_line2", "gameover_line3",
+            "zone_desc", "zone_cave", "zone_glint",
+            "cave_desc", "cave_echo",
+            "shark_attack", "shark_bite", "shark_escape", "shark_dark",
+            "shell_glow", "shell_pick", "shell_go", "shell_gone",
+            "surface_sun", "surface_reach", "surface_burst",
+            "surface_noshell", "surface_secret", "surface_swim",
+            "thanks", "nothing_below", "surface_empty",
+            "nothing_here", "explore", "quiet", "swim_past", "swim_deeper",
+            "breath"
+        };
+
+        //build an array of values matching the keys array
+        String[] values = new String[keys.length];
+
+        try
+        {
+            Scanner fileScanner = new Scanner(new FileReader(filename));
+            while (fileScanner.hasNextLine())
+            {
+                String line = fileScanner.nextLine().trim();
+
+                //skip blank lines
+                if (line.length() == 0)
+                {
+                    continue;
+                }
+
+                //split on first = sign only
+                int eqIndex = line.indexOf('=');
+                if (eqIndex == -1) { continue; }
+
+                String key   = line.substring(0, eqIndex).trim();
+                String value = line.substring(eqIndex + 1).trim();
+
+                //match key to position in keys array
+                for (int i = 0; i < keys.length; i++)
+                {
+                    if (keys[i].equals(key))
+                    {
+                        values[i] = value;
+                        break;
+                    }
+                }
+            }
+            fileScanner.close();
+        }
+        catch (IOException e)
+        {
+            System.out.println("Error reading messages file: " + e.getMessage());
+        }
+
+        messages = values;
+    }
+
+    //helper to get a message by index
+    public String msg(int index)
+    {
+        if (index >= 0 && index < messages.length && messages[index] != null)
+        {
+            return messages[index];
+        }
+        return "";
+    }
+
+    public void start()
+    {
+        //customize character name and set up the game instructions
+        printTitle();
+        customiseDiver();
+        System.out.println();
+        System.out.println("Good luck, " + diver.getName() + "!");
+        System.out.println("You have " + diver.getHealth() + " lives.");
+        System.out.println("Find the Golden Shell and make it back to the surface!");
+        System.out.println();
+        mainLoop();
+    }
+
+    public void mainLoop()
+    {
+        //game controls
+        while (state.equals("playing"))
+        {
+            if (!diver.isAlive())
+            {
+                state = "lost";
+                break;
+            }
+
+            if (!ocean.hasMoreZones())
+            {
+                offerSurface();
+                break;
+            }
+
+            //zone to zone movement
+            //index 37 = "swim_deeper"
+            diver.descend(msg(37));
+            Zone currentZone = ocean.getNextZone();
+            System.out.println();
+            System.out.println("--- " + currentZone.getName() + " ---");
+
+            if (currentZone instanceof Cave cave)
+            {
+                //index 14=cave_desc, 15=cave_echo
+                currentZone.describe(new String[]{ msg(14), msg(15) });
+                handleCave(cave);
+            }
+            else
+            {
+                //index 11=zone_desc, 12=zone_cave, 13=zone_glint
+                currentZone.describe(new String[]{ msg(11), msg(12), msg(13) });
+                handleZone(currentZone);
+            }
+
+            if (!diver.isAlive())
+            {
+                state = "lost";
+                break;
+            }
+
+            if (diver.hasGoldenShell())
+            {
+                //if they get the shell
+                GameEvent surfaceNow = new GameEvent(
+                    "You have the Golden Shell! What do you do?");
+                surfaceNow.addChoice("Head back to the surface now!");
+                surfaceNow.addChoice("Keep exploring deeper.");
+                int pick = surfaceNow.trigger(scanner);
+                if (pick == 1)
+                {
+                    offerSurface();
+                    break;
+                }
+            }
+        }
+        end();
+    }
+
+    private void handleZone(Zone zone)
+    {
+        GameEvent event = new GameEvent("What do you do?");
+        event.addChoice("Explore this area.");
+        event.addChoice("Swim deeper past it.");
+
+        int choice = event.trigger(scanner);
+        if (choice == 1)
+        {
+            //index 34=explore, 33=nothing_here, 20-23=shell messages
+            zone.explore(diver,
+                new String[]{ msg(34), msg(33) },
+                new String[]{ msg(20), msg(21), msg(22), msg(23) });
+        }
+        else
+        {
+            //index 36=swim_past
+            zone.pass(msg(36));
+        }
+    }
+
+    private void handleCave(Cave cave)
+    {
+        //describe cave
+        GameEvent event = new GameEvent(
+            "There is a dark cave here. What do you do?");
+        event.addChoice("Swim into the cave.");
+        event.addChoice("Explore the open water around the cave.");
+        event.addChoice("Swim past entirely.");
+
+        int choice = event.trigger(scanner);
+
+        //index 16-19=shark messages, 34=explore, 33=nothing, 20-23=shell, 35=quiet
+        String[] sharkMsgs  = { msg(16), msg(17), msg(18), msg(19) };
+        String[] exploreMsgs = { msg(34), msg(33) };
+        String[] shellMsgs  = { msg(20), msg(21), msg(22), msg(23) };
+
+        switch (choice)
+        {
+            case 1 -> cave.enter(diver, sharkMsgs, exploreMsgs, shellMsgs, msg(35));
+            case 2 -> cave.explore(diver, exploreMsgs, shellMsgs);
+            default -> cave.pass(msg(36));
+        }
+    }
+
+    private void offerSurface()
+    {
+        System.out.println();
+        //index 24=surface_sun, 25=surface_reach
+        surface.describe(new String[]{ msg(24), msg(25) });
+
+        //surface option
+        GameEvent event = new GameEvent("Do you swim to the surface?");
+        event.addChoice("Yes — head to the surface!");
+        event.addChoice("No — keep diving.");
+
+        int choice = event.trigger(scanner);
+        if (choice == 1)
+        {
+            //index 29=surface_swim, 4=win_line1, 6=win_line3, 27=noshell, 28=secret
+            diver.surface(msg(29));
+            surface.reach(diver, msg(26),
+                new String[]{ msg(4), msg(6) },
+                msg(27), msg(28));
+            if (diver.hasGoldenShell())
+            {
+                state = "won";
+            }
+            else
+            {
+                state = "lost";
+            }
+        }
+        else
+        {
+            //index 31=nothing_below, 32=surface_empty
+            System.out.println(msg(31));
+            System.out.println(msg(32));
+            diver.surface(msg(29));
+            surface.reach(diver, msg(26),
+                new String[]{ msg(4), msg(6) },
+                msg(27), msg(28));
+            state = "lost";
+        }
+    }
+
+    public void end()
+    {
+        //game lost screen
+        if (state.equals("lost") && !diver.isAlive())
+        {
+            System.out.println();
+            //index 8=gameover_line1, 9=gameover_line2
+            System.out.println(msg(8));
+            System.out.println("  GAME OVER — " + diver.getName() + " did not survive.");
+            System.out.println(msg(8));
+        }
+        System.out.println();
+        //index 30=thanks
+        System.out.println(msg(30));
+
+        //save result to scores.txt
+        saveScore();
+
+        scanner.close();
+    }
+
+    //write the player's result to scores.txt (third text file)
+    private void saveScore()
+    {
+        try
+        {
+            FileWriter writer = new FileWriter("scores.txt", true);
+            writer.write("Player: " + diver.getName()
+                       + " | Depth: " + diver.getDepth()
+                       + " | Shell: " + diver.hasGoldenShell()
+                       + " | Result: " + state + "\n");
+            writer.close();
+            System.out.println("Your result has been saved to scores.txt.");
+        }
+        catch (IOException e)
+        {
+            System.out.println("Could not save score: " + e.getMessage());
+        }
+    }
+
+    private void customiseDiver()
+    {
+        System.out.print("Enter your diver's name: ");
+        String name = scanner.nextLine().trim();
+        if (name.length() == 0)
+        {
+            name = "Diver";
+        }
+        diver = new Diver(name);
+    }
+
+    private void printTitle()
+    {
+        //game title screen — index 0-3
+        System.out.println(msg(0));
+        System.out.println(msg(1));
+        System.out.println(msg(2));
+        System.out.println(msg(3));
+        System.out.println();
+    }
+}
