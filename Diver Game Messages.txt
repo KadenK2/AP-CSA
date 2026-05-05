@@ -1,0 +1,51 @@
+title_line1===============================
+title_line2=   DIVER: GOLDEN SHELL QUEST
+title_line3===============================
+title_line4=Dive deep. Survive. Return.
+
+win_line1===============================
+win_line2=You emerge victorious with the Golden Shell!
+win_line3=The ocean whispers your legend.
+win_line4===============================
+
+gameover_line1===============================
+gameover_line2=Darkness surrounds you...
+gameover_line3=You have perished beneath the waves.
+
+zone_desc=The water is calm, but something feels off.
+zone_cave=A dark cave looms nearby.
+zone_glint=Something glimmers faintly below.
+
+cave_desc=The cave is tight and shadowy.
+cave_echo=You hear distant echoes...
+
+shark_attack=A shadow moves fast in the dark...
+shark_bite=The shark lunges at you!
+shark_escape=You escape, but you're hurt! Lives left:
+shark_dark=Everything goes black...
+
+shell_glow=A glowing object catches your eye...
+shell_pick=You reach out slowly...
+shell_go=You obtained the Golden Shell!
+shell_gone=There is nothing left here.
+
+surface_sun=Light shines from above.
+surface_reach=You are close to the surface!
+surface_burst=You burst through the water!
+
+surface_noshell=You made it back... but empty-handed.
+surface_secret=The Golden Shell was still below...
+
+surface_swim=You swim upward with all your strength...
+
+thanks=Thanks for playing!
+
+nothing_below=There is nothing else below...
+surface_empty=The ocean feels empty now.
+
+nothing_here=There is nothing here.
+explore=You explore the area carefully...
+quiet=The cave is quiet... too quiet.
+swim_past=You swim past
+swim_deeper=You dive deeper into the ocean (Depth 
+breath=You steady your breathing.
